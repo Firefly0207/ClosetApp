@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323481321624",
+    "project_id": "closetapp-ff776",
+    "storage_bucket": "closetapp-ff776.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323481321624:android:0b20d2e96603ad8b9c50ed",
+        "android_client_info": {
+          "package_name": "com.example.closetapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANayBfZv0_Qv02mDIWvCPRt1ktqeyYEfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

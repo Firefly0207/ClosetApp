@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 탭 버튼 영역 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/weatherTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날씨" />
+
+        <Button
+            android:id="@+id/closetTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="옷장" />
+
+        <Button
+            android:id="@+id/calendarTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="달력" />
+
+        <Button
+            android:id="@+id/communityTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="커뮤니티" />
+    </LinearLayout>
+
+    <!-- 섹션 컨텐츠 -->
+    <TextView
+        android:id="@+id/sectionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="홈 화면"
+        android:textSize="24sp"
+        android:gravity="center" />
+
+    <!-- 하단 네비게이션 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="?android:attr/windowBackground" />
+</LinearLayout>
