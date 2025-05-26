@@ -1,37 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/weatherTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="현재 날씨: 맑음 (서울)"
-        android:textSize="18sp"
-        android:paddingBottom="24dp"/>
+    <!-- 전체 내용 -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:layout_gravity="top">
 
-    <Button
-        android:id="@+id/closetButton"
+        <!-- 상단 앱 아이콘 + 앱 이름 -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_closet"
+                android:contentDescription="App Icon" />
+
+            <TextView
+                android:text="Closet App"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 날씨 텍스트 -->
+        <TextView
+            android:id="@+id/weatherTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날씨 로딩 중..."
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 버튼 -->
+        <Button
+            android:id="@+id/closetButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="옷장 화면"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/dailyfitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="데일리핏 화면"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/communityButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="커뮤니티 화면" />
+
+        <!-- 여백 확보용 (BottomNavigation 겹침 방지) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="80dp" />
+    </LinearLayout>
+
+    <!-- 하단 네비게이션 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="옷장 화면"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/dailyfitButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="데일리핏 화면"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/communityButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="커뮤니티 화면"/>
-
-</LinearLayout>
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/nav_item_selector"
+        app:itemTextColor="@color/nav_item_selector" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,23 +2,19 @@ package com.example.closetapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ClothDetailActivity extends AppCompatActivity {
 
     private ImageView clothImageView;
-    private TextView clothInfoTextView;
-    private Button deleteButton, homeButton, addClothButton, gotoMatchButton;
-
+    private TextView clothInfoTextView, clothDetailTextView;
+    private Button deleteButton;
     private FirebaseFirestore db;
     private String clothId;
 
@@ -29,36 +25,70 @@ public class ClothDetailActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+        // 툴바
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        // 뷰 바인딩
         clothImageView = findViewById(R.id.clothImageView);
         clothInfoTextView = findViewById(R.id.clothInfoTextView);
-        deleteButton = findViewById(R.id.deleteButton);
+        clothDetailTextView = findViewById(R.id.clothDetailTextView);
 
-        homeButton = findViewById(R.id.homeButton);
-        addClothButton = findViewById(R.id.addClothButton);
-        gotoMatchButton = findViewById(R.id.gotoMatchButton);
-
-        // 받아온 데이터
+        // 인텐트 데이터
         Intent intent = getIntent();
         String imageUrl = intent.getStringExtra("imageUrl");
+        String clothId = intent.getStringExtra("clothId");
         String info = intent.getStringExtra("info");
-        clothId = intent.getStringExtra("clothId");
 
-        // 이미지, 텍스트 세팅
+        Cloth cloth = (Cloth) intent.getSerializableExtra("cloth");
+
+        if (cloth != null) {
+            String detailText = String.format(
+                    "- 분류: %s\n- 해시태그: %s\n- 세탁 정보: %s\n- 원단: %s\n- 관리법: %s\n- 마지막 착용일: %s",
+                    cloth.getCategory(),
+                    cloth.getTags(),
+                    cloth.getWashInfo(),
+                    cloth.getFabric(),
+                    cloth.getCareInstructions(),
+                    cloth.getLastWornDate() != null ? cloth.getLastWornDate() : "기록 없음"
+            );
+            clothDetailTextView.setText(detailText);
+        }
+
         Glide.with(this).load(imageUrl).into(clothImageView);
         clothInfoTextView.setText(info);
 
-        deleteButton.setOnClickListener(v -> deleteCloth());
+        FloatingActionButton fabDelete = findViewById(R.id.fabDeleteCloth);
+        fabDelete.setOnClickListener(v -> deleteCloth());
 
-        // 하단 버튼
-        homeButton.setOnClickListener(v -> finish());
-        addClothButton.setOnClickListener(v -> startActivity(new Intent(this, ClothRegisterActivity.class)));
-        gotoMatchButton.setOnClickListener(v -> startActivity(new Intent(this, MatchActivity.class)));
+        FloatingActionButton fabEdit = findViewById(R.id.fabEditCloth);
+        fabEdit.setOnClickListener(v -> {
+            Intent editintent = new Intent(this, ClothRegisterActivity.class); // or ClothEditActivity if separated
+            intent.putExtra("clothId", clothId);
+            // cloth 객체 전체 넘기려면 Serializable or Parcelable 구현 필요
+            startActivity(intent);
+        });
+
+        // 하단 네비게이션
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_closet); // 현재 페이지 표시
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+            } else if (id == R.id.nav_daily) {
+                startActivity(new Intent(this, DailyFitActivity.class));
+            } else if (id == R.id.nav_community) {
+                startActivity(new Intent(this, CommunityActivity.class));
+            } else if (id == R.id.nav_mypage) {
+                startActivity(new Intent(this, MyPageActivity.class));
+            }
+            return true;
+        });
     }
 
     private void deleteCloth() {
@@ -71,7 +101,7 @@ public class ClothDetailActivity extends AppCompatActivity {
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "옷 삭제 완료!", Toast.LENGTH_SHORT).show();
-                    finish(); // 삭제 후 닫기
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();

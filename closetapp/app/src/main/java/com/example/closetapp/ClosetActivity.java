@@ -4,15 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -22,12 +23,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ClosetActivity extends AppCompatActivity {
-    private boolean isFavoriteSort = false; // 정렬 상태 기억
+    private boolean isFavoriteSort = false;
+
     private RecyclerView recyclerView;
     private ClothAdapter adapter;
     private List<Cloth> clothList = new ArrayList<>();
-
-    private Button homeButton, addClothButton, gotoMatchButton;
 
     private FirebaseFirestore db;
     private CollectionReference clothesRef;
@@ -36,47 +36,58 @@ public class ClosetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closet);
+
+        // 툴바 설정
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // 뒤로가기 버튼 추가
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // 뒤로가기 버튼
+            getSupportActionBar().setDisplayShowTitleEnabled(false); // 기본 타이틀 제거
         }
 
+        FloatingActionButton fabAdd = findViewById(R.id.fabAddCloth);
+        FloatingActionButton fabMatch = findViewById(R.id.fabMatch);
+
+        fabAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, ClothRegisterActivity.class));
+        });
+
+        fabMatch.setOnClickListener(v -> {
+            startActivity(new Intent(this, MatchActivity.class));
+        });
+
+
+        // 하단 네비게이션
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_closet); // 현재 탭 선택 표시
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+            } else if (id == R.id.nav_closet) {
+                return true;
+            } else if (id == R.id.nav_daily) {
+                startActivity(new Intent(this, DailyFitActivity.class));
+            } else if (id == R.id.nav_community) {
+                startActivity(new Intent(this, CommunityActivity.class));
+            } else if (id == R.id.nav_mypage) {
+                startActivity(new Intent(this, MyPageActivity.class));
+            }
+            return true;
+        });
+
+        // Firebase 설정
         db = FirebaseFirestore.getInstance();
         clothesRef = db.collection("clothes");
 
         recyclerView = findViewById(R.id.closetListView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        homeButton = findViewById(R.id.homeButton);
-        addClothButton = findViewById(R.id.addClothButton);
-        gotoMatchButton = findViewById(R.id.gotoMatchButton);
-
         adapter = new ClothAdapter(this, clothList);
         recyclerView.setAdapter(adapter);
 
-        // 버튼들
-        addClothButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ClosetActivity.this, ClothRegisterActivity.class);
-            startActivity(intent);
-        });
-
-        gotoMatchButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ClosetActivity.this, MatchActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.homeButton).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
-
-        // 옷 데이터 불러오기
+        // 데이터 로드
         loadClothesFromFirebase();
     }
-
 
     private void loadClothesFromFirebase() {
         clothesRef.addSnapshotListener((snapshots, e) -> {
@@ -86,14 +97,14 @@ public class ClosetActivity extends AppCompatActivity {
             }
 
             clothList.clear();
-
             for (QueryDocumentSnapshot doc : snapshots) {
                 Cloth cloth = doc.toObject(Cloth.class);
                 cloth.setId(doc.getId());
                 clothList.add(cloth);
             }
 
-            adapter.notifyDataSetChanged();
+            adapter = new ClothAdapter(this, clothList);
+            recyclerView.setAdapter(adapter);
         });
     }
 
@@ -115,27 +126,18 @@ public class ClosetActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-
-    // 필터 아이콘 메뉴 추가
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_closet, menu);
-        return true;
-    }
     private void toggleFavoriteSort() {
         isFavoriteSort = !isFavoriteSort;
 
         List<Cloth> sortedList = new ArrayList<>(clothList);
 
         if (isFavoriteSort) {
-            // 즐겨찾기 true를 위로
             Collections.sort(sortedList, (c1, c2) -> Boolean.compare(!c1.isFavorite(), !c2.isFavorite()));
             Toast.makeText(this, "즐겨찾기순 정렬", Toast.LENGTH_SHORT).show();
         } else {
-            // 기본 순서 (timestamp순)
             Collections.sort(sortedList, (c1, c2) -> {
                 if (c1.getTimestamp() == null || c2.getTimestamp() == null) return 0;
-                return c2.getTimestamp().compareTo(c1.getTimestamp()); // 최신순
+                return c2.getTimestamp().compareTo(c1.getTimestamp());
             });
             Toast.makeText(this, "최신순 정렬", Toast.LENGTH_SHORT).show();
         }
@@ -144,6 +146,11 @@ public class ClosetActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_closet, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -151,9 +158,7 @@ public class ClosetActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.menu_filter) {
-            FilterDialogFragment filterDialog = new FilterDialogFragment(clothList, selectedTags -> {
-                applyTagFilter(selectedTags);
-            });
+            FilterDialogFragment filterDialog = new FilterDialogFragment(clothList, this::applyTagFilter);
             filterDialog.show(getSupportFragmentManager(), "FilterDialog");
             return true;
         } else if (item.getItemId() == R.id.menu_sort_favorite) {
@@ -162,5 +167,5 @@ public class ClosetActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
+

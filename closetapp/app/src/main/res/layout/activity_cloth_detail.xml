@@ -1,27 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 툴바 -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        android:background="?android:attr/windowBackground"
+        app:title=""
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <!-- 본문 -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="72dp"
         android:padding="16dp">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/clothImageView"
@@ -33,44 +36,54 @@
                 android:id="@+id/clothInfoTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="옷 정보" />
+                android:textSize="16sp"
+                android:layout_marginTop="16dp" />
 
-            <Button
-                android:id="@+id/deleteButton"
+            <TextView android:id="@+id/clothDetailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="이 옷 삭제하기"
-                android:layout_marginTop="24dp"/>
+                android:textColor="#444"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp" />
+
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabEditCloth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="160dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="수정하기"
+        android:src="@drawable/ic_edit"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/primary" />
+
+    <!-- 삭제 버튼 (휴지통 아이콘) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDeleteCloth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="90dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="삭제하기"
+        android:src="@drawable/ic_delete"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/primary" />
+
+    <!-- 하단 네비게이션 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:weightSum="3">
-
-        <Button
-            android:id="@+id/homeButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="홈" />
-
-        <Button
-            android:id="@+id/addClothButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="옷 등록" />
-
-        <Button
-            android:id="@+id/gotoMatchButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="매치" />
-    </LinearLayout>
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/nav_item_selector"
+        app:itemTextColor="@color/nav_item_selector" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

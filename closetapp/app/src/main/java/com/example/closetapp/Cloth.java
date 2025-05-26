@@ -11,6 +11,10 @@ public class Cloth {
     private List<String> tags;
     private boolean favorite;
 
+    private String washInfo;
+    private String fabric;
+    private String careInstructions;
+    private String lastWornDate;
     public Cloth() {
         // Firestore 읽을 때 필요한 빈 생성자
     }
@@ -35,6 +39,10 @@ public class Cloth {
     public String getCategory() {
         return category;
     }
+    public String getWashInfo() { return washInfo; }
+    public String getFabric() { return fabric; }
+    public String getCareInstructions() { return careInstructions; }
+    public String getLastWornDate() { return lastWornDate; }
     public com.google.firebase.Timestamp getTimestamp() {
         return timestamp;
     }
@@ -63,5 +71,9 @@ public class Cloth {
     public void setId(String id) {
         this.id = id;
     }
+    public void setWashInfo(String washInfo) { this.washInfo = washInfo; }
+    public void setFabric(String fabric) { this.fabric = fabric; }
+    public void setCareInstructions(String careInstructions) { this.careInstructions = careInstructions; }
+    public void setLastWornDate(String lastWornDate) { this.lastWornDate = lastWornDate; }
 
 }
