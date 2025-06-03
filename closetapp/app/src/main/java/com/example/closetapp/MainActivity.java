@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView weatherTextView;
     private FirebaseAuth auth;
-    private static final String API_KEY = "YOUR_API_KEY"; // 여기에 OpenWeatherMap API 키 입력
+    private static final String API_KEY = "c8546efe4025c94f2b714065b5468b3c"; // 여기에 OpenWeatherMap API 키 입력
     private static final String CITY_NAME = "Seoul";
 
     @Override
