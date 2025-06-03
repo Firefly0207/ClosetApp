@@ -1,4 +1,3 @@
-// java/com/example/closetapp/CommunityActivity.java
 package com.example.closetapp;
 
 import android.app.AlertDialog;
