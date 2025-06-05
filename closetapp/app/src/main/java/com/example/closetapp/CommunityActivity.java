@@ -1,4 +1,3 @@
-// java/com/example/closetapp/CommunityActivity.java
 package com.example.closetapp;
 
 import android.app.AlertDialog;
@@ -10,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,10 +20,12 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,6 +58,31 @@ public class CommunityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setSelectedItemId(R.id.nav_community);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+            } else if (id == R.id.nav_closet) {
+                startActivity(new Intent(this, ClosetActivity.class));
+            } else if (id == R.id.nav_daily) {
+                startActivity(new Intent(this, DailyFitActivity.class));
+            } else if (id == R.id.nav_community) {
+                return true;
+            } else if (id == R.id.nav_mypage) {
+                startActivity(new Intent(this, MyPageActivity.class));
+            }
+            return true;
+        });
+
         FirebaseApp.initializeApp(this);
         storage = FirebaseStorage.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -86,6 +113,15 @@ public class CommunityActivity extends AppCompatActivity {
         fabAddPost.setOnClickListener(v -> showAddPostDialog());
 
         loadPostsFromFirebase();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showAddPostDialog() {
@@ -189,21 +225,16 @@ public class CommunityActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     postList.clear();
-
-
                     for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                         String docId = doc.getId();
                         String caption = doc.getString("caption");
                         String imageUrl = doc.getString("imageUrl");
                         int likes = doc.getLong("likes").intValue();
-
-
                         postList.add(new PostItem(docId, imageUrl, caption, likes));
                     }
                     postAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e ->
-                        Log.e("FIREBASE", "불러오기 실패", e)
-                );
+                        Log.e("FIREBASE", "불러오기 실패", e));
     }
 }
