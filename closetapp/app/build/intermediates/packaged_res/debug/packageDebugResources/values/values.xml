@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cloth_categories">
+        <item>상의</item>
+        <item>하의</item>
+        <item>아우터</item>
+        <item>신발</item>
+        <item>기타</item>
+    </string-array>
+    <string-array name="cloth_tag_filters">
+        <item>전체</item>
+        <item>여름</item>
+        <item>겨울</item>
+        <item>기본</item>
+        <item>캐주얼</item>
+        <item>포멀</item>
+    </string-array>
+    <color name="black">#FF000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="gray">#888888</color>
+    <color name="primary">#3F51B5</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">closetapp</string>
+    <string name="gcm_defaultSenderId" translatable="false">231724073101</string>
+    <string name="google_api_key" translatable="false">AIzaSyBgY3d1YcNQONw9xY8oZK9YUohmiaJU4c4</string>
+    <string name="google_app_id" translatable="false">1:231724073101:android:37ac1a63753ac396dba2c4</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBgY3d1YcNQONw9xY8oZK9YUohmiaJU4c4</string>
+    <string name="google_storage_bucket" translatable="false">closetapp-af297.firebasestorage.app</string>
+    <string name="project_id" translatable="false">closetapp-af297</string>
+    <style name="Base.Theme.Closetapp" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Closetapp" parent="Base.Theme.Closetapp"/>
+</resources>
