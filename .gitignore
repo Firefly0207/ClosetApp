@@ -1,0 +1,15 @@
+# Gradle files
+.gradle/
+build/
+**/build/
+local.properties
+
+# Ignore IDE settings
+.idea/
+*.iml
+
+# Gradle wrapper (필수 파일은 제외)
+!gradle/wrapper/gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat

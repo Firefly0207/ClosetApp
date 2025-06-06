@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sort_favorite"
+        android:icon="@drawable/ic_star_filled"
+        android:title="즐겨찾기순 정렬"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_filter"
+        android:icon="@drawable/ic_filter_list"
+        android:title="필터"
+        app:showAsAction="ifRoom|withText" />
+</menu>
+

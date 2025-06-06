@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">closetapp</string>
+    <string-array name="cloth_categories">
+        <item>상의</item>
+        <item>하의</item>
+        <item>아우터</item>
+        <item>신발</item>
+        <item>기타</item>
+    </string-array>
+    <string-array name="cloth_tag_filters">
+        <item>전체</item>
+        <item>여름</item>
+        <item>겨울</item>
+        <item>기본</item>
+        <item>캐주얼</item>
+        <item>포멀</item>
+    </string-array>
+</resources>
