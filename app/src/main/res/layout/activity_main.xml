@@ -27,7 +27,7 @@
                 android:contentDescription="App Icon" />
 
             <TextView
-                android:text="Closet App"
+                android:text="Vesti"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginStart="8dp"
@@ -35,22 +35,79 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <!-- 날씨 텍스트 -->
-        <TextView
-            android:id="@+id/weatherTextView"
-            android:layout_width="wrap_content"
+        <!-- 날씨 표기 -->
+        <LinearLayout
+            android:id="@+id/weatherLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="날씨 로딩 중..."
-            android:textSize="16sp"
-            android:layout_marginBottom="24dp" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/weatherCityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="서울"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/weatherTempTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="22℃"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:gravity="end"/>
+
+                <ImageView
+                    android:id="@+id/weatherIconImageView"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="날씨 아이콘"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/weatherDescTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="맑음"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- 버튼 -->
         <Button
             android:id="@+id/closetButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="옷장 화면"
+            android:text="내 옷장 둘러보기 →"
             android:layout_marginBottom="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/closetPreviewRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:clipToPadding="false"/>
 
         <Button
             android:id="@+id/dailyfitButton"

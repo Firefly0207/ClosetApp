@@ -11,7 +11,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Vesti"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Closetapp"
@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".activity.ClosetActivity" />
         <activity android:name=".activity.MatchActivity" />
+        <activity android:name=".activity.MatchRegisterActivity" />
         <activity android:name=".activity.DailyFitActivity" />
         <activity android:name=".activity.CalendarActivity" />
         <activity android:name=".activity.CommunityActivity" />
@@ -37,6 +38,10 @@
         <activity android:name=".activity.MyPageActivity"/>
         <activity android:name=".activity.OutfitRegisterActivity"/>
         <activity android:name=".activity.ClothSelectActivity"/>
+        <activity android:name=".activity.FavoriteClothesActivity" />
+        <activity android:name=".activity.FavoriteMatchesActivity" />
+        <activity android:name=".activity.FavoriteDailyFitsActivity" />
+        <activity android:name=".activity.FavoritePostsActivity" />
 
     </application>
 

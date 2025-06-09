@@ -2,7 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#3F51B5</color> <!-- 네이비 블루 -->
+    <color name="primary">#7b9acc</color>
+    <color name="primaryVariant">#5a7ca3</color>
+    <color name="accent">#7b9acc</color>
+    <color name="background">#FCF6F5</color>
+    <color name="surface">#FCF6F5</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="onBackground">#222222</color>
+    <color name="onSurface">#222222</color>
     <color name="gray">#888888</color>    <!-- 기본 회색 -->
-    <color name="colorAccent">#FF4081</color>
+    <color name="secondary_text_light">#888888</color>
 </resources>

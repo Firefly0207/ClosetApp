@@ -57,7 +57,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_favorite"
-                    android:tint="@color/colorAccent"/>
+                    android:tint="@color/accent"/>
 
                 <TextView
                     android:id="@+id/likeCountTextView"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:textSize="14sp"
-                    android:textColor="@color/colorAccent"/>
+                    android:textColor="@color/accent"/>
 
             </LinearLayout>
 

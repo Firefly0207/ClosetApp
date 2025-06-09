@@ -44,44 +44,45 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostItem item = postList.get(position);
-
-
         Glide.with(context)
                 .load(item.getImageUrl())
                 .placeholder(android.R.drawable.ic_menu_gallery)
                 .error(android.R.drawable.ic_dialog_alert)
                 .into(holder.imagePost);
-
         holder.textCaption.setText(item.getCaption());
         holder.textLikes.setText(item.getLikes() + " likes");
-
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DocumentReference postRef = FirebaseFirestore.getInstance().collection("posts").document(item.getDocumentId());
+        postRef.get().addOnSuccessListener(documentSnapshot -> {
+            List<String> likedUserIds = (List<String>) documentSnapshot.get("likedUserIds");
+            if (likedUserIds == null) likedUserIds = new java.util.ArrayList<>();
+            boolean alreadyLiked = likedUserIds.contains(userId);
+            holder.likeIcon.setImageResource(alreadyLiked ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
+        });
         holder.likeIcon.setOnClickListener(v -> {
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DocumentReference postRef = FirebaseFirestore.getInstance().collection("posts").document(item.getDocumentId());
             postRef.get().addOnSuccessListener(documentSnapshot -> {
                 List<String> likedUserIds = (List<String>) documentSnapshot.get("likedUserIds");
                 if (likedUserIds == null) likedUserIds = new java.util.ArrayList<>();
                 boolean alreadyLiked = likedUserIds.contains(userId);
                 if (alreadyLiked) {
-                    // 좋아요 취소
                     postRef.update(
                         "likes", FieldValue.increment(-1),
                         "likedUserIds", FieldValue.arrayRemove(userId)
                     );
                     item.setLikes(item.getLikes() - 1);
                     holder.textLikes.setText(item.getLikes() + " likes");
+                    holder.likeIcon.setImageResource(R.drawable.ic_favorite_border);
                 } else {
-                    // 좋아요 추가
                     postRef.update(
                         "likes", FieldValue.increment(1),
                         "likedUserIds", FieldValue.arrayUnion(userId)
                     );
                     item.setLikes(item.getLikes() + 1);
                     holder.textLikes.setText(item.getLikes() + " likes");
+                    holder.likeIcon.setImageResource(R.drawable.ic_favorite_filled);
                 }
             });
         });
-
         holder.itemView.setOnLongClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("삭제 확인")

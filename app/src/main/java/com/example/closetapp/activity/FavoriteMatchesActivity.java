@@ -5,65 +5,51 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.example.closetapp.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageButton;
+import android.view.ViewGroup;
 
-public class MatchActivity extends AppCompatActivity {
+public class FavoriteMatchesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<MatchItem> matchList = new ArrayList<>();
+    private List<MatchItem> favoriteMatches = new ArrayList<>();
     private MatchAdapter adapter;
     private FirebaseFirestore db;
     private String currentUserId;
-    private boolean showOnlyFavorite = false;
-    private MenuItem favoriteFilterMenuItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
-
+        setContentView(R.layout.activity_favorite_matches);
+        
+        // 툴바 설정
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MatchAdapter(matchList);
-        recyclerView.setAdapter(adapter);
-
-        db = FirebaseFirestore.getInstance();
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        loadMatches();
-
-        FloatingActionButton fab = findViewById(R.id.fabAddMatch);
-        fab.setOnClickListener(v -> startActivity(new Intent(this, MatchRegisterActivity.class)));
-
+        
+        // 하단 네비게이션 설정
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
-        bottomNav.setSelectedItemId(R.id.nav_closet); // 예시: closet 탭과 동일하게 표시
+        bottomNav.setSelectedItemId(R.id.nav_mypage);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             } else if (id == R.id.nav_closet) {
+                startActivity(new Intent(this, ClosetActivity.class));
                 return true;
             } else if (id == R.id.nav_daily) {
                 startActivity(new Intent(this, DailyFitActivity.class));
@@ -77,59 +63,67 @@ public class MatchActivity extends AppCompatActivity {
             }
             return false;
         });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_match, menu);
-        favoriteFilterMenuItem = menu.findItem(R.id.action_favorite_filter);
-        updateFavoriteFilterIcon();
-        return true;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MatchAdapter(favoriteMatches);
+        recyclerView.setAdapter(adapter);
+        db = FirebaseFirestore.getInstance();
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        loadFavoriteMatches();
+        setupTabs();
     }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        } else if (item.getItemId() == R.id.action_favorite_filter) {
-            showOnlyFavorite = !showOnlyFavorite;
-            updateFavoriteFilterIcon();
-            loadMatches();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void updateFavoriteFilterIcon() {
-        if (favoriteFilterMenuItem != null) {
-            favoriteFilterMenuItem.setIcon(showOnlyFavorite ? R.drawable.ic_star_filled : R.drawable.ic_star_outline);
-        }
+    private void setupTabs() {
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.getTabAt(1).select();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        startActivity(new Intent(FavoriteMatchesActivity.this, FavoriteClothesActivity.class));
+                        break;
+                    case 1:
+                        // 현재 탭
+                        break;
+                    case 2:
+                        startActivity(new Intent(FavoriteMatchesActivity.this, FavoriteDailyFitsActivity.class));
+                        break;
+                    case 3:
+                        startActivity(new Intent(FavoriteMatchesActivity.this, FavoritePostsActivity.class));
+                        break;
+                }
+            }
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
-
-    private void loadMatches() {
+    private void loadFavoriteMatches() {
         db.collection("matches")
           .whereEqualTo("userId", currentUserId)
+          .whereEqualTo("favorite", true)
           .get()
           .addOnSuccessListener(queryDocumentSnapshots -> {
-              matchList.clear();
+              favoriteMatches.clear();
               for (var doc : queryDocumentSnapshots.getDocuments()) {
                   String topImageUrl = doc.getString("topImageUrl");
                   String bottomImageUrl = doc.getString("bottomImageUrl");
                   List<String> extraImageUrls = (List<String>) doc.get("extraImageUrls");
                   String description = doc.getString("description");
                   boolean favorite = doc.contains("favorite") && Boolean.TRUE.equals(doc.getBoolean("favorite"));
-                  if (showOnlyFavorite && !favorite) continue;
-                  matchList.add(new MatchItem(topImageUrl, bottomImageUrl, extraImageUrls, description, favorite, doc.getId()));
-              }
-              if (!showOnlyFavorite) {
-                  // 즐겨찾기 먼저 정렬
-                  matchList.sort((a, b) -> Boolean.compare(!a.favorite, !b.favorite));
+                  favoriteMatches.add(new MatchItem(topImageUrl, bottomImageUrl, extraImageUrls, description, favorite, doc.getId()));
               }
               adapter.notifyDataSetChanged();
           });
     }
-
     public static class MatchItem {
         public String topImageUrl, bottomImageUrl, description, id;
         public List<String> extraImageUrls;
@@ -149,7 +143,6 @@ public class MatchActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int pos) {
             MatchItem item = list.get(pos);
-            // 이미지 최대 3개
             Glide.with(holder.itemView.getContext()).load(item.topImageUrl).into(holder.image1);
             Glide.with(holder.itemView.getContext()).load(item.bottomImageUrl).into(holder.image2);
             if (item.extraImageUrls != null && !item.extraImageUrls.isEmpty()) {
@@ -175,7 +168,7 @@ public class MatchActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             ImageView image1, image2, image3;
             TextView description;
-            ImageButton favoriteButton;
+            android.widget.ImageButton favoriteButton;
             ViewHolder(View v) {
                 super(v);
                 image1 = v.findViewById(R.id.image1);
@@ -186,4 +179,4 @@ public class MatchActivity extends AppCompatActivity {
             }
         }
     }
-}
+} 

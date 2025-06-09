@@ -31,9 +31,6 @@ public class MyPageActivity extends AppCompatActivity {
     private String currentUserId;
     private TextView nameTextView, emailTextView;
     private Button logoutButton;
-    private RecyclerView favoriteOutfitsRecyclerView;
-    private OutfitAdapter favoriteOutfitsAdapter;
-    private List<Outfit> favoriteOutfitsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +54,24 @@ public class MyPageActivity extends AppCompatActivity {
         nameTextView = findViewById(R.id.nameTextView);
         emailTextView = findViewById(R.id.emailTextView);
         logoutButton = findViewById(R.id.logoutButton);
-        favoriteOutfitsRecyclerView = findViewById(R.id.favoriteOutfitsRecyclerView);
 
-        // 즐겨찾기 코디 리스트 설정
-        favoriteOutfitsList = new ArrayList<>();
-        favoriteOutfitsAdapter = new OutfitAdapter(this, favoriteOutfitsList);
-        favoriteOutfitsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        favoriteOutfitsRecyclerView.setAdapter(favoriteOutfitsAdapter);
+        // 즐겨찾기 버튼 인텐트 연결
+        Button btnFavoriteClothes = findViewById(R.id.btnFavoriteClothes);
+        Button btnFavoriteMatches = findViewById(R.id.btnFavoriteMatches);
+        Button btnFavoriteDailyFits = findViewById(R.id.btnFavoriteDailyFits);
+        Button btnFavoritePosts = findViewById(R.id.btnFavoritePosts);
+
+        btnFavoriteClothes.setOnClickListener(v ->
+            startActivity(new Intent(this, FavoriteClothesActivity.class)));
+        btnFavoriteMatches.setOnClickListener(v ->
+            startActivity(new Intent(this, FavoriteMatchesActivity.class)));
+        btnFavoriteDailyFits.setOnClickListener(v ->
+            startActivity(new Intent(this, FavoriteDailyFitsActivity.class)));
+        btnFavoritePosts.setOnClickListener(v ->
+            startActivity(new Intent(this, FavoritePostsActivity.class)));
 
         // 사용자 정보 로드
         loadUserInfo();
-
-        // 즐겨찾기 코디 로드
-        loadFavoriteOutfits();
 
         // 로그아웃 버튼
         logoutButton.setOnClickListener(v -> logout());
@@ -111,27 +113,6 @@ public class MyPageActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> 
                     Toast.makeText(this, "사용자 정보 로드 실패", Toast.LENGTH_SHORT).show());
-    }
-
-    private void loadFavoriteOutfits() {
-        db.collection("outfits")
-                .whereEqualTo("userId", currentUserId)
-                .whereEqualTo("favorite", true)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    favoriteOutfitsList.clear();
-                    for (var doc : queryDocumentSnapshots.getDocuments()) {
-                        Outfit outfit = doc.toObject(Outfit.class);
-                        if (outfit != null) {
-                            outfit.setId(doc.getId());
-                            favoriteOutfitsList.add(outfit);
-                        }
-                    }
-                    favoriteOutfitsAdapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "즐겨찾기 로드 실패", Toast.LENGTH_SHORT).show());
     }
 
     private void logout() {

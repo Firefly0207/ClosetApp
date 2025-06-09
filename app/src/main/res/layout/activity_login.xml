@@ -6,6 +6,17 @@
     android:gravity="center"
     android:padding="24dp">
 
+    <TextView
+        android:id="@+id/appNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vesti"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="32dp" />
+
     <EditText
         android:id="@+id/loginEmailEditText"
         android:layout_width="match_parent"
@@ -36,6 +47,6 @@
         android:id="@+id/signupRedirectButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="회원가입 하러가기"
+        android:text="회원가입"
         android:layout_marginTop="12dp" />
 </LinearLayout>

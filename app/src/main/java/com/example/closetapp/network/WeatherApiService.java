@@ -9,6 +9,7 @@ public interface WeatherApiService {
     Call<WeatherResponse> getCurrentWeather(
             @Query("q") String cityName,
             @Query("appid") String apiKey,
-            @Query("units") String units
+            @Query("units") String units,
+            @Query("lang") String lang
     );
 }
